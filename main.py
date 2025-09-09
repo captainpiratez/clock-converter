@@ -17,25 +17,55 @@ def update_time():
     pst_time = time_in_timezone('US/Pacific')
     cet_time = time_in_timezone('CET')
 
-    label_utc.config(text=f"UTC: {utc_time}")
-    label_est.config(text=f"US/Eastern: {est_time}")
-    label_pst.config(text=f"US/Pacific: {pst_time}")
-    label_cet.config(text=f"CET: {cet_time}")
+    times = [utc_time, est_time, pst_time, cet_time]
+    for i, (_, lbl_time) in enumerate(labels):
+        lbl_time.config(text=times[i])
 
     root.after(1000, update_time)
 
+
 root = tk.Tk()
-root.title("Digital Clock")
+root.title("World Digital Clock")
+root.geometry("750x485")
+root.minsize(750, 485)
+root.configure(bg="#282828")
+root.resizable(True, True)
 
-label_utc = tk.Label(root, font=('calibri', 40, 'bold'), background='purple', foreground='white')
-label_utc.pack(anchor='center')
-label_est = tk.Label(root, font=('calibri', 40, 'bold'), background='green', foreground='white')
-label_est.pack(anchor='center')
-label_pst = tk.Label(root, font=('calibri', 40, 'bold'), background='blue', foreground='white')
-label_pst.pack(anchor='center')
-label_cet = tk.Label(root, font=('calibri', 40, 'bold'), background='red', foreground='white')
-label_cet.pack(anchor='center')
 
+
+# Set up the visual style to make everything look clean and modern
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("TFrame", background="#282828")
+style.configure("Clock.TLabel", font=("Segoe UI", 18, "bold"), background="#3c3836", foreground="#ebdbb2", padding=18, relief="groove")
+style.configure("Title.TLabel", font=("Segoe UI", 32, "bold"), background="#282828", foreground="#ebdbb2")
+
+main_frame = ttk.Frame(root, style="TFrame")
+main_frame.pack(expand=True, fill="both", padx=30, pady=30)
+
+# Add the main title at the top of the window
+title = ttk.Label(main_frame, text="World Digital Clock", style="Title.TLabel", anchor="center", justify="center")
+title.grid(row=0, column=0, columnspan=2, pady=(0, 30), sticky="n")
+
+# Create labels for each time zone, keeping them in a single column for simplicity
+labels = []
+zones = [
+    ("UTC:", 'UTC'),
+    ("US/Eastern:", 'US/Eastern'),
+    ("US/Pacific:", 'US/Pacific'),
+    ("CET:", 'CET'),
+]
+for i, (zone_name, tz) in enumerate(zones, start=1):
+    lbl_head = ttk.Label(main_frame, text=zone_name, style="Clock.TLabel", anchor="e", justify="right", width=10)
+    lbl_time = ttk.Label(main_frame, style="Clock.TLabel", anchor="w", justify="left", width=32)
+    lbl_head.grid(row=i, column=0, padx=(25,5), pady=10, sticky="ew")
+    lbl_time.grid(row=i, column=1, padx=(5,25), pady=10, sticky="ew")
+    labels.append((lbl_head, lbl_time))
+
+for i in range(1, 5):
+    main_frame.rowconfigure(i, weight=1)
+main_frame.columnconfigure(0, weight=0)
+main_frame.columnconfigure(1, weight=1)
 
 update_time()
 root.mainloop()
