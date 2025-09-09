@@ -1,12 +1,15 @@
 import tkinter as tk
+from tkinter import ttk
 from datetime import datetime
 from pytz import timezone
-import pytz
 
 def time_in_timezone(tz_name):
     tz = timezone(tz_name)
-    time_now = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S %Z')
-    return time_now
+    dt = datetime.now(tz)
+    date_str = dt.strftime('%d.%m.%Y')
+    time_str = dt.strftime('%H:%M:%S')
+    zone_str = dt.strftime('%Z')
+    return f"{time_str}  {date_str} {zone_str}"
 
 def update_time():
     utc_time = time_in_timezone('UTC')
